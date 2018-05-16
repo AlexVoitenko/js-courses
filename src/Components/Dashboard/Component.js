@@ -3,6 +3,7 @@ import React from 'react';
 import LinkButton from '../Buttons/LinkButton';
 import TextInput from '../TextInput/Component';
 import QuestionList from '../QuestionList/Container';
+import ApolloQuestionList from '../QuestionList/ApolloContainer';
 import styled from 'styled-components';
 
 
@@ -59,7 +60,7 @@ const Dashboard = ({ search, sortBy, onChange, user }) => (
       )}
     </PanelWrapper>
 
-    <QuestionList search={search} sortBy={sortBy} />
+    <ApolloQuestionList search={search} sortBy={sortBy} />
   </MainWrapper>
 );
 

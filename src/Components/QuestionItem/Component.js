@@ -68,7 +68,7 @@ const QuestionItem = ({ question }) => (
     <BottomWrapper>
       <Tags tags={question.tags} />
 
-      <Time>{question.createdAt.toLocaleDateString()}</Time>
+      <Time>{question.createdAt}</Time>
     </BottomWrapper>
   </QuestionWrapper>
 );
