@@ -1,12 +1,14 @@
 import React from 'react';
-import { compose, withHandlers, lifecycle, withStateHandlers, branch, renderComponent } from 'recompose';
+import { compose, withHandlers, lifecycle, withStateHandlers, branch, renderComponent, withProps } from 'recompose';
 import { withInputs } from 'custom-hoc';
 import { withRouter, Redirect } from 'react-router';
 import * as R from 'ramda';
 import { db, withUser } from '../../utils';
+import { graphql } from 'react-apollo';
 
 import Component from './Component';
 import AppLoader from '../Loaders/AppLoader';
+import { createQuestionQuery } from './gql';
 
 
 const unique = array => [...new Set(array)];
@@ -20,7 +22,6 @@ const prepareTags = R.compose(
   toArray,
   stripSpaces,
 );
-
 
 const enhance = compose(
   withRouter,
@@ -38,17 +39,25 @@ const enhance = compose(
     },
   }),
 
-  branch(
-    ({ isFetching }) => isFetching,
-    renderComponent(AppLoader)
-  ),
+  // branch(
+  //   ({ isFetching }) => isFetching,
+  //   renderComponent(AppLoader)
+  // ),
 
-  withUser,
+  // withUser,
+  //
+  // branch(
+  //   ({ user, question }) => !user || (question._id && question.createdById !== user._id),
+  //   renderComponent(() => <Redirect to="/"/>),
+  // ),
 
-  branch(
-    ({ user, question }) => !user || (question._id && question.createdById !== user._id),
-    renderComponent(() => <Redirect to="/"/>),
-  ),
+  graphql(createQuestionQuery, {
+    options: {
+      refetchQueries: ['QuestionList'],
+    },
+    // Rename mutate prop
+    props: ({ mutate }) => ({ createQuestion: mutate })
+  }),
 
   withInputs(({ question }) => ({
     title: {
@@ -63,21 +72,20 @@ const enhance = compose(
   })),
 
   withHandlers({
-    onSubmit: ({ tags, title, description, history, user, match }) => () => {
+    onSubmit: ({ tags, title, description, history, user, match, createQuestion }) => () => {
       const document = {
         title,
         description,
         tags: prepareTags(tags),
-        createdById: user._id
       };
 
-      if (match.params.questionId) {
-        db.questions.update(match.params.questionId, document)
-      } else {
-        db.questions.insert(document);
-      }
-
-      history.push('/');
+      createQuestion({
+        variables: {
+          input: document,
+        }
+      })
+        .then(() => history.push('/')) // Redirect to home page after question created
+        .catch(console.error);
     },
     onRemove: ({ match, history }) => () => {
       db.questions.remove(match.params.questionId);

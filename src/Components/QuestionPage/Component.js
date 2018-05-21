@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import AnswersList from '../AnswersList/Container';
+import AnswersList from '../AnswersList/Component';
 import NewAnswer from '../NewAnswer/Container';
+
 
 
 const Wrapper = styled.div`
@@ -21,15 +22,15 @@ const Description = styled.div`
 `;
 
 
-const QuestionPage = ({ question, author }) => (
+const QuestionPage = ({ question }) => (
   <Wrapper>
     <Title>{question.title}</Title>
 
-    <div>By: <strong>{author.profile.fullName}</strong></div>
+    <div>By: <strong>{question.author && question.author.fullName}</strong></div>
 
     <Description>{question.description}</Description>
 
-    <AnswersList />
+    <AnswersList answers={question.answers} />
 
     <NewAnswer />
   </Wrapper>

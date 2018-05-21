@@ -19,7 +19,7 @@ const Tag = styled.span`
 `;
 
 
-const Tags = ({ tags }) => (
+const Tags = ({ tags = [] }) => (
   <Wrapper>
     {tags.map(tag => (
       <Tag key={tag}>{tag}</Tag>

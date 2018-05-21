@@ -1,30 +1,35 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { compose, branch, renderComponent, mapProps } from 'recompose';
+import { compose, branch, renderComponent, mapProps, withStateHandlers, withProps } from 'recompose';
 import { graphql } from 'react-apollo';
 
 import AppLoader from '../Loaders/AppLoader';
 import QuestionList from './Component';
-
-const query = gql`
-  query QuestionList {
-    questions {
-      _id
-      title
-      tags
-      createdAt
-      author {
-        fullName
-      }
-    }
-  }
-`;
+import { questionsListQuery } from './gql'
 
 export default compose(
-  graphql(query),
+  // HOC to handle query limit
+  withStateHandlers(
+    ({ limit = 2 }) => ({ limit }),
+    {
+      onIncreaseLimit: ({ limit }) => () => ({ limit: limit + 2 })
+    },
+  ),
+  // HOC to fetch questions from gql-server
+  graphql(questionsListQuery, {
+    options: (props) => ({ // Pass limit variable to query
+      variables: {
+        limit: props.limit,
+      },
+    })
+  }),
+  // Show loading spinner on initial load
   branch(
-    ({ data: { loading } }) => loading,
+    ({ data: { loading, networkStatus } }) =>
+      loading && networkStatus === 1,
     renderComponent(AppLoader),
   ),
-  mapProps(({ data: { questions } }) => ({ questions }))
-)(QuestionList)
+  mapProps(({ onIncreaseLimit, data: { questions } }) => ({
+    onIncreaseLimit,
+    questions
+  }))
+)(QuestionList);

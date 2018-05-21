@@ -63,7 +63,7 @@ const QuestionForm = ({ title, description, tags, submitReady, onChange, onSubmi
       <Button
         primary
         type="submit"
-        disabled={!submitReady}
+        disabled={submitReady}
       >
         Submit
       </Button>

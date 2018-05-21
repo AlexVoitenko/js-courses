@@ -7,7 +7,7 @@ import Component from './Component';
 
 const enhance = compose(
   withUser,
-  shouldRender(props => props.user),
+  // shouldRender(props => props.user),
   withInputs({
     answer: {
       validate: value => value.length > 0,

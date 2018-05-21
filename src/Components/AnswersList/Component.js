@@ -106,32 +106,32 @@ const divideByAnswerId = (votes, answerId) => divideVotes(votesByAnswerId(votes,
 const getAuthor = (users, authorId) => users.find(user => user._id === authorId)
   || { profile: { fullName: 'Anonymous' } };
 
-const AnswersList = ({ answers, votes, users, onVote, user }) => (
+const AnswersList = ({ answers = [], votes, users, onVote, user }) => (
   <Answers>
     {answers.map(answer => {
-      const { positive, negative } = divideByAnswerId(votes, answer._id);
-      const author = getAuthor(users, answer.createdById);
+      // const { positive, negative } = divideByAnswerId(votes, answer._id);
+      // const author = getAuthor(users, answer.createdById);
       return (
         <Answer key={answer._id}>
-          <Votes>
-            <Vote up disabled={!user} onClick={() => onVote(answer._id, true)}>
-              <span>{positive}</span><span>▲</span>
-            </Vote>
-            <Vote disabled={!user} onClick={() => onVote(answer._id, false)}>
-              <span>{negative}</span><span>▼</span>
-            </Vote>
-          </Votes>
+          {/*<Votes>*/}
+            {/*<Vote up disabled={!user} onClick={() => onVote(answer._id, true)}>*/}
+              {/*<span>{positive}</span><span>▲</span>*/}
+            {/*</Vote>*/}
+            {/*<Vote disabled={!user} onClick={() => onVote(answer._id, false)}>*/}
+              {/*<span>{negative}</span><span>▼</span>*/}
+            {/*</Vote>*/}
+          {/*</Votes>*/}
 
           <AnswerWrapper>
             <AnswerBody>{answer.title}</AnswerBody>
 
             <AnswerBottomWrapper>
               <AnswerBottom>
-                By: <strong>{author.profile.fullName}</strong>
+                By: <strong>{answer.author && answer.author.fullName}</strong>
               </AnswerBottom>
 
               <AnswerBottom>
-                {answer.createdAt.toLocaleDateString()}
+                {new Date(answer.createdAt).toLocaleDateString()}
               </AnswerBottom>
             </AnswerBottomWrapper>
           </AnswerWrapper>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import Dashboard from '../Dashboard/Container';
-import QuestionPage from '../QuestionPage/Container'
+import QuestionPage from '../QuestionPage/ApolloContainer'
 import SignIn from '../SignIn/Container';
 import SignUp from '../SignUp/Container';
 import RestorePassword from '../RestorePassword/Container';
